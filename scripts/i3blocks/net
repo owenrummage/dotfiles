@@ -8,7 +8,7 @@ mkdir -p "$cache_dir" 2>/dev/null || cache=""
 mapfile -t ifaces < <(
   ip -o addr show scope global 2>/dev/null \
     | awk '
-      $2 ~ /^(eth|en|wlan|wl|ath|wifi|ra|sta)/ {
+      $2 ~ /^(eth|en|wlan|wl|ath|wifi|ra|sta|br|bond)/ {
         seen[$2] = 1
       }
       END {

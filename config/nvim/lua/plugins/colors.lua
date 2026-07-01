@@ -2,6 +2,39 @@ local function hl(group, opts)
   vim.api.nvim_set_hl(0, group, opts)
 end
 
+local function hex_to_rgb(hex)
+  return tonumber(hex:sub(2, 3), 16), tonumber(hex:sub(4, 5), 16), tonumber(hex:sub(6, 7), 16)
+end
+
+local function rgb_to_hex(r, g, b)
+  return string.format("#%02x%02x%02x", r, g, b)
+end
+
+local function mix(a, b, amount)
+  local ar, ag, ab = hex_to_rgb(a)
+  local br, bg, bb = hex_to_rgb(b)
+  local function channel(x, y)
+    return math.floor(x + (y - x) * amount + 0.5)
+  end
+  return rgb_to_hex(channel(ar, br), channel(ag, bg), channel(ab, bb))
+end
+
+local function wal_background()
+  local path = vim.fn.expand("~/.cache/wal/colors.sh")
+  if vim.fn.filereadable(path) == 0 then
+    return "#11131a"
+  end
+
+  for _, line in ipairs(vim.fn.readfile(path)) do
+    local value = line:match("^background='(#[0-9A-Fa-f]+)'")
+    if value then
+      return value
+    end
+  end
+
+  return "#11131a"
+end
+
 return {
   {
     dir = vim.fn.stdpath("config"),
@@ -9,10 +42,11 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
+      local theme_bg = wal_background()
       local c = {
-        bg = "#11131a",
-        bg_alt = "#181b24",
-        bg_lift = "#232735",
+        bg = mix(theme_bg, "#000000", 0.35),
+        bg_alt = mix(theme_bg, "#ffffff", 0.05),
+        bg_lift = mix(theme_bg, "#ffffff", 0.12),
         fg = "#d8d7e8",
         muted = "#7f8496",
         dim = "#5e6475",

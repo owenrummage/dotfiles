@@ -21,15 +21,15 @@ command=~/.local/bin/dotfiles/i3blocks/\$BLOCK_NAME
 
 [net]
 color=#3b82f6
-interval=10
+interval=2
 
 [disk]
 color=${color2:-#22c55e}
-interval=60
+interval=2
 
 [memory]
 color=${color2:-#22c55e}
-interval=5
+interval=2
 
 [cpu]
 color=${color2:-#22c55e}
@@ -45,7 +45,7 @@ interval=2
 
 [datetime]
 color=#d4d4d4
-interval=30
+interval=2
 I3BLOCKS
 
 exec i3blocks -c "$cache"
