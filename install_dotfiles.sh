@@ -17,7 +17,6 @@ declare -a LINKS=(
   "config/picom:${HOME}/.config/picom"
   "config/kitty:${HOME}/.config/kitty"
   "config/rofi:${HOME}/.config/rofi"
-  "config/dunst:${HOME}/.config/dunst"
   "config/nvim:${HOME}/.config/nvim"
   "config/zsh:${HOME}/.config/zsh"
   "config/zsh.d:${HOME}/.config/zsh.d"

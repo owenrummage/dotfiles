@@ -13,7 +13,6 @@ declare -a TARGETS=(
   "${HOME}/.config/picom"
   "${HOME}/.config/kitty"
   "${HOME}/.config/rofi"
-  "${HOME}/.config/dunst"
   "${HOME}/.config/nvim"
   "${HOME}/.config/zsh"
   "${HOME}/.config/zsh.d"
