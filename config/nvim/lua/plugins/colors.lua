@@ -2,51 +2,14 @@ local function hl(group, opts)
   vim.api.nvim_set_hl(0, group, opts)
 end
 
-local function hex_to_rgb(hex)
-  return tonumber(hex:sub(2, 3), 16), tonumber(hex:sub(4, 5), 16), tonumber(hex:sub(6, 7), 16)
-end
-
-local function rgb_to_hex(r, g, b)
-  return string.format("#%02x%02x%02x", r, g, b)
-end
-
-local function mix(a, b, amount)
-  local ar, ag, ab = hex_to_rgb(a)
-  local br, bg, bb = hex_to_rgb(b)
-  local function channel(x, y)
-    return math.floor(x + (y - x) * amount + 0.5)
-  end
-  return rgb_to_hex(channel(ar, br), channel(ag, bg), channel(ab, bb))
-end
-
-local function wal_background()
-  local path = vim.fn.expand("~/.cache/wal/colors.sh")
-  if vim.fn.filereadable(path) == 0 then
-    return "#11131a"
-  end
-
-  for _, line in ipairs(vim.fn.readfile(path)) do
-    local value = line:match("^background='(#[0-9A-Fa-f]+)'")
-    if value then
-      return value
-    end
-  end
-
-  return "#11131a"
-end
-
 return {
   {
     dir = vim.fn.stdpath("config"),
-    name = "pastel-punch",
+    name = "dotfiles-editor",
     lazy = false,
     priority = 1000,
     config = function()
-      local theme_bg = wal_background()
       local c = {
-        bg = mix(theme_bg, "#000000", 0.35),
-        bg_alt = mix(theme_bg, "#ffffff", 0.05),
-        bg_lift = mix(theme_bg, "#ffffff", 0.12),
         fg = "#d8d7e8",
         muted = "#7f8496",
         dim = "#5e6475",
@@ -66,23 +29,23 @@ return {
       if vim.fn.exists("syntax_on") == 1 then
         vim.cmd("syntax reset")
       end
-      vim.g.colors_name = "pastel-punch"
+      vim.g.colors_name = "dotfiles-editor"
 
-      hl("Normal", { fg = c.fg, bg = c.bg })
-      hl("NormalFloat", { fg = c.fg, bg = c.bg_alt })
-      hl("FloatBorder", { fg = c.purple, bg = c.bg_alt })
-      hl("Cursor", { fg = c.bg, bg = c.fg })
-      hl("CursorLine", { bg = c.bg_alt })
+      hl("Normal", { fg = c.fg, ctermbg = 0 })
+      hl("NormalFloat", { fg = c.fg, ctermbg = 0 })
+      hl("FloatBorder", { fg = c.purple, ctermbg = 0 })
+      hl("Cursor", { ctermfg = 0, ctermbg = 7 })
+      hl("CursorLine", { ctermbg = 0 })
       hl("LineNr", { fg = c.dim })
       hl("CursorLineNr", { fg = c.purple, bold = true })
-      hl("Visual", { fg = c.fg, bg = c.bg_lift })
-      hl("Search", { fg = c.bg, bg = c.yellow })
-      hl("IncSearch", { fg = c.bg, bg = c.peach, bold = true })
-      hl("StatusLine", { fg = c.fg, bg = c.bg_lift })
-      hl("StatusLineNC", { fg = c.muted, bg = c.bg_alt })
+      hl("Visual", { fg = c.fg, ctermbg = 8 })
+      hl("Search", { fg = "#11131a", bg = c.yellow })
+      hl("IncSearch", { fg = "#11131a", bg = c.peach, bold = true })
+      hl("StatusLine", { fg = c.fg, ctermbg = 8 })
+      hl("StatusLineNC", { fg = c.muted, ctermbg = 0 })
       hl("WinSeparator", { fg = c.dim })
-      hl("Pmenu", { fg = c.fg, bg = c.bg_alt })
-      hl("PmenuSel", { fg = c.bg, bg = c.purple })
+      hl("Pmenu", { fg = c.fg, ctermbg = 0 })
+      hl("PmenuSel", { fg = "#11131a", bg = c.purple })
       hl("Directory", { fg = c.blue })
       hl("Title", { fg = c.purple, bold = true })
       hl("ErrorMsg", { fg = c.red, bold = true })
@@ -98,7 +61,7 @@ return {
       hl("Type", { fg = c.cyan })
       hl("Special", { fg = c.pink })
       hl("Underlined", { fg = c.blue, underline = true })
-      hl("Todo", { fg = c.bg, bg = c.yellow, bold = true })
+      hl("Todo", { fg = "#11131a", bg = c.yellow, bold = true })
       hl("DiagnosticError", { fg = c.red })
       hl("DiagnosticWarn", { fg = c.yellow })
       hl("DiagnosticInfo", { fg = c.blue })
