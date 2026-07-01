@@ -1,0 +1,88 @@
+configuration {
+  modi: "drun,run,window";
+  show-icons: true;
+  icon-theme: "Papirus-Dark";
+  font: "JetBrainsMono Nerd Font 11";
+  display-drun: "Apps";
+  display-run: "Run";
+  display-window: "Windows";
+  drun-display-format: "{name}";
+}
+
+@theme "~/.cache/wal/colors-rofi-dark.rasi"
+
+* {
+  foreground: #f4f7fb;
+  normal-foreground: @foreground;
+  alternate-normal-foreground: @foreground;
+  accent: @active-background;
+  background: #101214;
+  background-light: #20252b;
+  border-color: @accent;
+  selected-normal-background: @accent;
+  selected-normal-foreground: #101214;
+  background-color: transparent;
+}
+
+window {
+  transparency: "real";
+  width: 34%;
+  border: 2px;
+  border-radius: 10px;
+  background-color: @background;
+}
+
+mainbox {
+  padding: 16px;
+  spacing: 12px;
+}
+
+inputbar {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: @background-light;
+  text-color: @foreground;
+  children: [ prompt, entry ];
+}
+
+prompt {
+  padding: 0 10px 0 0;
+  text-color: @accent;
+}
+
+entry {
+  placeholder: "Search";
+  placeholder-color: @foreground;
+  text-color: @foreground;
+}
+
+listview {
+  lines: 10;
+  columns: 1;
+  fixed-height: true;
+  spacing: 4px;
+}
+
+element {
+  padding: 9px 10px;
+  border-radius: 7px;
+  text-color: @foreground;
+}
+
+element normal.normal {
+  text-color: @foreground;
+}
+
+element alternate.normal {
+  text-color: @foreground;
+}
+
+element selected {
+  background-color: @accent;
+  text-color: @background;
+}
+
+element-icon {
+  size: 22px;
+  margin: 0 10px 0 0;
+}

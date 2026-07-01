@@ -1,0 +1,145 @@
+# Global modifiers and theme
+set $mod Mod1
+set $alt Mod1
+font pango:JetBrainsMono Nerd Font 10
+
+set $background #101214
+set $foreground #f4f7fb
+set $cursor #888888
+set $color0 #101214
+set $color1 #888888
+set $color2 #8E8E8E
+set $color3 #A7A7A7
+set $color4 #CFCFCF
+set $color5 #010101
+set $color6 #2E2E2E
+set $color7 #f4f7fb
+set $color8 #6f7880
+set $color9 #888888
+set $color10 #8E8E8E
+set $color11 #A7A7A7
+set $color12 #CFCFCF
+set $color13 #010101
+set $color14 #2E2E2E
+set $color15 #ffffff
+
+set $terminal kitty
+set $launcher rofi -show drun
+set $lock ~/.local/bin/dotfiles/system/lock
+
+gaps inner 40
+gaps outer 10
+smart_gaps on
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+focus_follows_mouse yes
+mouse_warping none
+
+client.focused          $color4 $color4 $foreground $color4 $color4
+client.focused_inactive $background $background $foreground $background $background
+client.unfocused        $background $background $color8 $background $background
+client.urgent           $color1 $color1 $foreground $color1 $color1
+
+floating_modifier $mod
+focus_wrapping yes
+
+
+# System keybinds
+bindsym $mod+Return exec --no-startup-id $terminal
+bindsym $mod+d exec --no-startup-id $launcher
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+e exec --no-startup-id i3-nagbar -t warning -m "Exit i3?" -B "Exit" "i3-msg exit"
+bindsym $mod+Escape exec --no-startup-id $lock
+
+# Window Management
+bindsym $alt+Left focus left
+bindsym $alt+Down focus down
+bindsym $alt+Up focus up
+bindsym $alt+Right focus right
+bindsym $alt+Shift+Left move left
+bindsym $alt+Shift+Down move down
+bindsym $alt+Shift+Up move up
+bindsym $alt+Shift+Right move right
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+space floating toggle
+
+# Workspace shortcuts
+bindsym $alt+1 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 1
+bindsym $alt+2 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 2
+bindsym $alt+3 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 3
+bindsym $alt+4 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 4
+bindsym $alt+5 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 5
+bindsym $alt+6 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 6
+bindsym $alt+7 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 7
+bindsym $alt+8 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 8
+bindsym $alt+9 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 9
+bindsym $alt+0 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace switch 10
+
+bindsym $alt+Shift+1 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 1
+bindsym $alt+Shift+2 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 2
+bindsym $alt+Shift+3 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 3
+bindsym $alt+Shift+4 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 4
+bindsym $alt+Shift+5 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 5
+bindsym $alt+Shift+6 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 6
+bindsym $alt+Shift+7 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 7
+bindsym $alt+Shift+8 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 8
+bindsym $alt+Shift+9 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 9
+bindsym $alt+Shift+0 exec --no-startup-id ~/.local/bin/dotfiles/i3/workspace move 10
+
+
+# Media keys
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
+bindsym Print exec --no-startup-id maim -s ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
+bindsym $alt+Shift+s exec --no-startup-id sh -c 'maim -s | xclip -selection clipboard -t image/png'
+
+
+# Resize mode
+set $resize_step 20 px 
+mode "resize" {
+  bindsym h resize shrink width $resize_step
+  bindsym j resize grow height $resize_step
+  bindsym k resize shrink height $resize_step
+  bindsym l resize grow width $resize_step
+  bindsym Left resize shrink width $resize_step
+  bindsym Down resize grow height $resize_step
+  bindsym Up resize shrink height $resize_step
+  bindsym Right resize grow width $resize_step
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+  bindsym $alt+r mode "default"
+}
+bindsym $alt+r mode "resize"
+
+bar {
+  status_command i3blocks -c ~/.config/i3/i3blocks.conf
+  position top
+  tray_output primary
+  font pango:JetBrainsMono Nerd Font 12 
+  separator_symbol "|"
+  colors {
+    background $background
+    statusline $foreground
+    separator  $color8
+    focused_workspace  $color4 $color4 $background
+    active_workspace   $color2 $color2 $background
+    inactive_workspace $color0 $color0 $foreground
+    urgent_workspace   $color1 $color1 $background
+  }
+}
+
+# Autostart tools
+exec --no-startup-id ~/.local/bin/dotfiles/theme/random-wallpaper
+exec --no-startup-id picom --config ~/.config/picom/picom.conf
+exec --no-startup-id dunst
+exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.local/bin/dotfiles/system/lock
+exec --no-startup-id ~/.local/bin/dotfiles/i3/assign-workspaces
+exec --no-startup-id ~/.local/bin/dotfiles/i3/monitor-watch
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1

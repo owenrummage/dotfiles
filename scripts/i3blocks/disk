@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage="$(df / | awk 'NR==2 {gsub(/%/, "", $5); print $5}')"
+color="#9ece6a"
+if (( usage >= 85 )); then
+  color="#f7768e"
+elif (( usage >= 60 )); then
+  color="#e0af68"
+fi
+
+printf '󰋊 %s%%\n\n%s\n' "$usage" "$color"

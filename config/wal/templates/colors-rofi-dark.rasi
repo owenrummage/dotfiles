@@ -1,0 +1,14 @@
+* {
+    background: #101214;
+    foreground: #f4f7fb;
+    normal-background: #181b1f;
+    normal-foreground: #f4f7fb;
+    alternate-normal-background: #20252b;
+    alternate-normal-foreground: #f4f7fb;
+    selected-normal-background: {color9};
+    selected-normal-foreground: #101214;
+    active-background: {color9};
+    active-foreground: #101214;
+    urgent-background: {color11};
+    urgent-foreground: #101214;
+}

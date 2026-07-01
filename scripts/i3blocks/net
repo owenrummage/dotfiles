@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+iface="$(ip route get 1.1.1.1 2>/dev/null | awk '{for (i=1;i<=NF;i++) if ($i=="dev") print $(i+1); exit}')"
+if [[ -z "${iface:-}" ]]; then
+  printf '󰤮 offline\n'
+  exit 0
+fi
+addr="$(ip -4 addr show "$iface" | awk '/inet /{sub(/\/.*/, "", $2); print $2; exit}')"
+printf '󰖩 %s %s\n' "$iface" "${addr:-no-ip}"

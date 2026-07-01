@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+battery=""
+for path in /sys/class/power_supply/BAT*; do
+  [[ -d "$path" ]] && battery="$path" && break
+done
+
+if [[ -z "$battery" ]]; then
+  printf '󰚥 AC\n\n#e6e6e6\n'
+  exit 0
+fi
+
+capacity="$(<"${battery}/capacity")"
+status="$(<"${battery}/status")"
+watts=""
+if [[ -r "${battery}/power_now" ]]; then
+  power_now="$(<"${battery}/power_now")"
+  watts="$(awk -v p="$power_now" 'BEGIN {printf " %.1fW", p/1000000}')"
+elif [[ -r "${battery}/current_now" && -r "${battery}/voltage_now" ]]; then
+  current_now="$(<"${battery}/current_now")"
+  voltage_now="$(<"${battery}/voltage_now")"
+  watts="$(awk -v c="$current_now" -v v="$voltage_now" 'BEGIN {printf " %.1fW", (c*v)/1000000000000}')"
+fi
+
+icon="󰁹"
+[[ "$status" == "Charging" ]] && icon="󰂄"
+
+color="#9ece6a"
+if [[ "$status" == "Charging" ]]; then
+  color="#7aa2f7"
+elif (( capacity < 20 )); then
+  color="#f7768e"
+elif (( capacity < 50 )); then
+  color="#e0af68"
+fi
+
+printf '%s %s %s%%%s\n\n%s\n' "$icon" "$status" "$capacity" "$watts" "$color"

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+last=""
+
+signature() {
+  xrandr --query | awk '/ connected/{print $1 ":" $2 ":" $3}' | sort | tr '\n' ';'
+}
+
+main() {
+  while sleep 3; do
+    current="$(signature)"
+    if [[ "$current" != "$last" ]]; then
+      last="$current"
+      "${HOME}/.local/bin/dotfiles/i3/assign-workspaces" || true
+      i3-msg reload >/dev/null 2>&1 || true
+    fi
+  done
+}
+
+main "$@"

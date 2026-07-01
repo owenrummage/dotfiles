@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+active_outputs() {
+  i3-msg -t get_outputs | jq -r '.[] | select(.active).name' | sort
+}
+
+main() {
+  local index=0 output start end ws
+  while IFS= read -r output; do
+    start=$((index * 10 + 1))
+    end=$((index * 10 + 10))
+    for ws in $(seq "$start" "$end"); do
+      i3-msg "workspace number ${ws}; move workspace to output ${output}" >/dev/null
+    done
+    index=$((index + 1))
+  done < <(active_outputs)
+  i3-msg workspace number 1 >/dev/null
+}
+
+main "$@"

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+free | awk '
+  /Mem:/ {
+    usage = int(($3 / $2) * 100 + 0.5)
+    color = "#9ece6a"
+    if (usage >= 85) {
+      color = "#f7768e"
+    } else if (usage >= 60) {
+      color = "#e0af68"
+    }
+    printf "󰍛 %d%%\n\n%s\n", usage, color
+  }
+'

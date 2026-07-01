@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+read -r _ user nice system idle iowait irq softirq steal _ < /proc/stat
+total=$((user + nice + system + idle + iowait + irq + softirq + steal))
+busy=$((total - idle - iowait))
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/i3blocks-cpu"
+cache_dir="$(dirname "$cache")"
+mkdir -p "$cache_dir" 2>/dev/null || cache=""
+if [[ -r "$cache" ]]; then
+  read -r prev_total prev_busy < "$cache"
+  delta_total=$((total - prev_total))
+  delta_busy=$((busy - prev_busy))
+  if (( delta_total > 0 )); then
+    usage="$((100 * delta_busy / delta_total))"
+  else
+    usage=0
+  fi
+else
+  usage=""
+fi
+if [[ -n "$cache" && -w "$cache_dir" ]]; then
+  printf '%s %s\n' "$total" "$busy" > "$cache"
+fi
+
+if [[ -z "$usage" ]]; then
+  printf '󰻠 --%%\n\n#9ece6a\n'
+  exit 0
+fi
+
+color="#9ece6a"
+if (( usage >= 85 )); then
+  color="#f7768e"
+elif (( usage >= 60 )); then
+  color="#e0af68"
+fi
+
+printf '󰻠 %d%%\n\n%s\n' "$usage" "$color"

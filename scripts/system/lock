@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+image="${HOME}/.cache/dotfiles/current-wallpaper"
+target="$image"
+if [[ -L "$image" ]]; then
+  target="$(readlink -f -- "$image" 2>/dev/null || printf '%s' "$image")"
+fi
+
+if [[ -e "$target" && "${target##*.}" != "svg" ]]; then
+  i3lock-color --image="$target" --fill --clock --indicator --radius=110 --ring-width=7
+else
+  i3lock-color --color=111111 --clock --indicator --radius=110 --ring-width=7
+fi

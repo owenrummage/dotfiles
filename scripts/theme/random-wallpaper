@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+wallpaper_dir="${HOME}/.local/share/wallpapers"
+state_dir="${HOME}/.cache/dotfiles"
+current_link="${state_dir}/current-wallpaper"
+converted_wallpaper="${state_dir}/current-wallpaper.png"
+
+find_wallpaper() {
+  local current_wallpaper
+  local -a wallpapers
+  current_wallpaper="$(current_wallpaper_path)"
+
+  mapfile -t wallpapers < <(find -L "$wallpaper_dir" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null)
+  if ((${#wallpapers[@]})); then
+    choose_wallpaper "$current_wallpaper" "${wallpapers[@]}"
+    return
+  fi
+
+  mapfile -t wallpapers < <(find -L "$wallpaper_dir" -type f -iname '*.svg' 2>/dev/null)
+  if ((${#wallpapers[@]})); then
+    choose_wallpaper "$current_wallpaper" "${wallpapers[@]}"
+  fi
+}
+
+current_wallpaper_path() {
+  if [[ -e "$current_link" || -L "$current_link" ]]; then
+    readlink -f "$current_link" 2>/dev/null || printf '%s\n' "$current_link"
+  fi
+}
+
+choose_wallpaper() {
+  local current_wallpaper=$1
+  shift
+
+  local wallpapers=("$@")
+  local candidates=()
+  local wallpaper resolved_wallpaper
+
+  for wallpaper in "${wallpapers[@]}"; do
+    resolved_wallpaper="$(readlink -f "$wallpaper" 2>/dev/null || printf '%s\n' "$wallpaper")"
+    if [[ -n "$current_wallpaper" && "$resolved_wallpaper" == "$current_wallpaper" ]]; then
+      continue
+    fi
+    candidates+=("$wallpaper")
+  done
+
+  if ((${#candidates[@]})); then
+    wallpapers=("${candidates[@]}")
+  fi
+
+  printf '%s\n' "${wallpapers[RANDOM % ${#wallpapers[@]}]}"
+}
+
+prepare_wallpaper() {
+  local wallpaper=$1
+
+  case "${wallpaper,,}" in
+    *.svg)
+      if command -v rsvg-convert >/dev/null 2>&1; then
+        rsvg-convert -w 3840 -h 2160 -a -f png -o "$converted_wallpaper" "$wallpaper"
+      elif command -v magick >/dev/null 2>&1; then
+        magick -background none "$wallpaper" -resize 3840x2160 "$converted_wallpaper"
+      else
+        printf 'SVG wallpaper requires rsvg-convert or magick: %s\n' "$wallpaper" >&2
+        return 1
+      fi
+      printf '%s\n' "$converted_wallpaper"
+      ;;
+    *)
+      printf '%s\n' "$wallpaper"
+      ;;
+  esac
+}
+
+main() {
+  mkdir -p "$state_dir"
+  local source_wallpaper wallpaper
+  source_wallpaper="$(find_wallpaper || true)"
+  [[ -n "$source_wallpaper" ]] || exit 1
+  wallpaper="$(prepare_wallpaper "$source_wallpaper")"
+
+  ln -sfn "$source_wallpaper" "$current_link"
+  feh --bg-fill "$wallpaper"
+  wal -n -q -i "$wallpaper"
+  "${HOME}/.local/bin/dotfiles/theme/reload-theme" || true
+}
+
+main "$@"

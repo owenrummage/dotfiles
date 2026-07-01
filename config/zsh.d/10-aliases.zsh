@@ -1,0 +1,12 @@
+alias ls='eza -lah --group-directories-first --icons=auto'
+alias ll='eza -lah --group-directories-first --icons=auto'
+alias la='eza -la --group-directories-first --icons=auto'
+alias l='eza -lh --group-directories-first --icons=auto'
+alias gs='git status --short --branch'
+alias ga="git add"
+alias gc='git commit'
+alias gp='git push'
+alias grep='grep --color=auto'
+alias cat='bat --paging=never --style=plain'
+alias ipinfo='curl -fsSL https://ipinfo.io'
+alias weather='curl -fsSL wttr.in'

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  printf 'Usage: %s switch|move 1..10\n' "${0##*/}" >&2
+  exit 2
+}
+
+workspace_for_focused_monitor() {
+  local digit=$1 outputs focused index base
+  focused="$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused).output')"
+  mapfile -t outputs < <(i3-msg -t get_outputs | jq -r '.[] | select(.active).name' | sort)
+  index=0
+  local output
+  for output in "${outputs[@]}"; do
+    if [[ "$output" == "$focused" ]]; then
+      break
+    fi
+    index=$((index + 1))
+  done
+  base=$((index * 10))
+  printf '%d\n' "$((base + digit))"
+}
+
+main() {
+  [[ $# -eq 2 ]] || usage
+  local action=$1 digit=$2 workspace
+  [[ "$action" == "switch" || "$action" == "move" ]] || usage
+  [[ "$digit" =~ ^[1-9]$|^10$ ]] || usage
+
+  workspace="$(workspace_for_focused_monitor "$digit")"
+  if [[ "$action" == "switch" ]]; then
+    i3-msg "workspace number ${workspace}" >/dev/null
+  else
+    i3-msg "move container to workspace number ${workspace}; workspace number ${workspace}" >/dev/null
+  fi
+}
+
+main "$@"

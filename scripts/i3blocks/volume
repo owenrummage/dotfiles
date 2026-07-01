@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v pactl >/dev/null 2>&1; then
+  printf '󰕿 --\n'
+  exit 0
+fi
+
+sink="$(pactl get-default-sink 2>/dev/null || true)"
+if [[ -z "$sink" ]]; then
+  printf '󰕿 --\n'
+  exit 0
+fi
+
+case "${BLOCK_BUTTON:-}" in
+  1)
+    pactl set-sink-mute "$sink" toggle >/dev/null 2>&1 || true
+    ;;
+  4)
+    pactl set-sink-volume "$sink" +5% >/dev/null 2>&1 || true
+    ;;
+  5)
+    pactl set-sink-volume "$sink" -5% >/dev/null 2>&1 || true
+    ;;
+esac
+
+volume="$(pactl get-sink-volume "$sink" 2>/dev/null | awk -F'/' 'NR==1 {gsub(/[[:space:]]/, "", $2); print $2}')"
+muted="$(pactl get-sink-mute "$sink" 2>/dev/null | awk '{print $2}')"
+level="${volume%%%}"
+
+if [[ -z "$volume" || -z "$level" ]]; then
+  printf '󰕿 --\n'
+  exit 0
+fi
+
+icon="󰕾"
+if [[ "$muted" == "yes" ]]; then
+  icon="󰖁"
+elif (( level < 35 )); then
+  icon="󰕿"
+elif (( level < 70 )); then
+  icon="󰖀"
+fi
+
+printf '%s %s\n' "$icon" "$volume"
