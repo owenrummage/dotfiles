@@ -1,10 +1,62 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-iface="$(ip route get 1.1.1.1 2>/dev/null | awk '{for (i=1;i<=NF;i++) if ($i=="dev") print $(i+1); exit}')"
-if [[ -z "${iface:-}" ]]; then
-  printf '󰤮 offline\n'
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/i3blocks-net"
+cache_dir="$(dirname "$cache")"
+mkdir -p "$cache_dir" 2>/dev/null || cache=""
+
+mapfile -t ifaces < <(
+  ip -o addr show scope global 2>/dev/null \
+    | awk '
+      $2 ~ /^(eth|en|wlan|wl|ath|wifi|ra|sta)/ {
+        seen[$2] = 1
+      }
+      END {
+        for (iface in seen) {
+          print iface
+        }
+      }
+    ' \
+    | sort
+)
+
+if ((${#ifaces[@]} == 0)); then
+  printf 'offline\n'
   exit 0
 fi
-addr="$(ip -4 addr show "$iface" | awk '/inet /{sub(/\/.*/, "", $2); print $2; exit}')"
-printf '󰖩 %s %s\n' "$iface" "${addr:-no-ip}"
+
+index=0
+default_iface="$(ip route get 1.1.1.1 2>/dev/null | awk '{for (i=1;i<=NF;i++) if ($i=="dev") print $(i+1); exit}')"
+if [[ -n "${default_iface:-}" ]]; then
+  for i in "${!ifaces[@]}"; do
+    if [[ "${ifaces[$i]}" == "$default_iface" ]]; then
+      index=$i
+      break
+    fi
+  done
+fi
+
+if [[ -n "$cache" && -r "$cache" ]]; then
+  read -r index < "$cache" || index=0
+fi
+[[ "$index" =~ ^[0-9]+$ ]] || index=0
+
+if [[ "${BLOCK_BUTTON:-}" == 1 ]]; then
+  index=$(((index + 1) % ${#ifaces[@]}))
+fi
+
+if (( index >= ${#ifaces[@]} )); then
+  index=0
+fi
+
+if [[ -n "$cache" ]]; then
+  printf '%s\n' "$index" > "$cache" 2>/dev/null || true
+fi
+
+iface="${ifaces[$index]}"
+addr="$(ip -4 -o addr show "$iface" scope global 2>/dev/null | awk '{sub(/\/.*/, "", $4); print $4; exit}')"
+if [[ -z "$addr" ]]; then
+  addr="$(ip -6 -o addr show "$iface" scope global 2>/dev/null | awk '{sub(/\/.*/, "", $4); print $4; exit}')"
+fi
+
+printf '%s %s\n' "$iface" "${addr:-no-ip}"

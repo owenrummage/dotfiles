@@ -2,13 +2,13 @@
 set -euo pipefail
 
 if ! command -v pactl >/dev/null 2>&1; then
-  printf '󰕿 --\n'
+  printf 'V --\n'
   exit 0
 fi
 
 sink="$(pactl get-default-sink 2>/dev/null || true)"
 if [[ -z "$sink" ]]; then
-  printf '󰕿 --\n'
+  printf 'V --\n'
   exit 0
 fi
 
@@ -29,17 +29,12 @@ muted="$(pactl get-sink-mute "$sink" 2>/dev/null | awk '{print $2}')"
 level="${volume%%%}"
 
 if [[ -z "$volume" || -z "$level" ]]; then
-  printf '󰕿 --\n'
+  printf 'V --\n'
   exit 0
 fi
 
-icon="󰕾"
 if [[ "$muted" == "yes" ]]; then
-  icon="󰖁"
-elif (( level < 35 )); then
-  icon="󰕿"
-elif (( level < 70 )); then
-  icon="󰖀"
+  printf 'V muted\n'
+else
+  printf 'V %s\n' "$volume"
 fi
-
-printf '%s %s\n' "$icon" "$volume"

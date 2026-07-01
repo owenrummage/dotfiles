@@ -13,7 +13,7 @@ for path in /sys/class/power_supply/BAT*; do
 done
 
 if [[ -z "$battery" ]]; then
-  printf '󱐋 --%%\n\n#22c55e\n'
+  printf 'AC\n\n#22c55e\n'
   exit 0
 fi
 
@@ -35,9 +35,10 @@ elif [[ -r "${battery}/current_now" && -r "${battery}/voltage_now" ]]; then
   fi
 fi
 
-icon="󰁹"
+label="BAT"
 case "$status" in
-  Charging|Full|Not\ charging) icon="󱐋" ;;
+  Charging) label="CHG" ;;
+  Full|Not\ charging) label="AC" ;;
 esac
 
 color="#22c55e"
@@ -49,4 +50,4 @@ elif (( capacity < 50 )); then
   color="#eab308"
 fi
 
-printf '%s %s%%%s\n\n%s\n' "$icon" "$capacity" "$watts" "$color"
+printf '%s %s%%%s\n\n%s\n' "$label" "$capacity" "$watts" "$color"
