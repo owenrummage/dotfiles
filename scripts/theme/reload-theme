@@ -9,48 +9,7 @@ reload_dunst() {
   command -v dunstctl >/dev/null 2>&1 && dunstctl reload >/dev/null 2>&1 || true
 }
 
-update_i3_colors() {
-  local colors="${HOME}/.cache/wal/i3-colors"
-  local config="${HOME}/.config/i3/config"
-  local config_target tmp
-
-  [[ -r "$colors" && -r "$config" ]] || return 0
-  config_target="$(readlink -f -- "$config" 2>/dev/null || printf '%s\n' "$config")"
-  tmp="$(mktemp)"
-
-  awk '
-    NR == FNR {
-      if ($1 == "set") {
-        colors[$2] = $0
-      }
-      next
-    }
-    $1 == "set" && ($2 in colors) {
-      print colors[$2]
-      next
-    }
-    { print }
-  ' "$colors" "$config_target" > "$tmp"
-  mv -- "$tmp" "$config_target"
-}
-
-update_i3blocks_colors() {
-  local generated="${HOME}/.cache/wal/i3blocks.conf"
-  local config="${HOME}/.config/i3/i3blocks.conf"
-
-  [[ -r "$generated" && -e "$config" ]] || return 0
-  cp -- "$generated" "$config"
-}
-
 main() {
-  if [[ -r "${HOME}/.cache/wal/wal.conf" && -d "${HOME}/.config/kitty" ]]; then
-    cp "${HOME}/.cache/wal/wal.conf" "${HOME}/.config/kitty/wal.conf"
-  fi
-  update_i3_colors
-  update_i3blocks_colors
-  if [[ -r "${HOME}/.cache/wal/dunstrc" && -d "${HOME}/.config/dunst" ]]; then
-    cp "${HOME}/.cache/wal/dunstrc" "${HOME}/.config/dunst/dunstrc"
-  fi
   reload_i3
   reload_dunst
 }

@@ -3,3 +3,12 @@
 *.bak
 *~
 
+config/i3/colors
+config/i3/i3blocks.conf
+config/kitty/wal.conf
+config/dunst/dunstrc
+
+config/1Password/**
+!config/1Password/
+!config/1Password/ssh/
+!config/1Password/ssh/agent.example.toml

@@ -3,25 +3,7 @@ set $mod Mod1
 set $alt Mod1
 font pango:JetBrainsMono Nerd Font 10
 
-set $background #0e0607
-set $foreground #c2c0c1
-set $cursor #c2c0c1
-set $color0 #0e0607
-set $color1 #BC2135
-set $color2 #CC172E
-set $color3 #D7233A
-set $color4 #E3223A
-set $color5 #DC2B41
-set $color6 #F0344B
-set $color7 #c2c0c1
-set $color8 #695555
-set $color9 #BC2135
-set $color10 #CC172E
-set $color11 #D7233A
-set $color12 #E3223A
-set $color13 #DC2B41
-set $color14 #F0344B
-set $color15 #c2c0c1
+include ~/.cache/wal/i3-colors
 set $title_focused_bg #3a3a3a
 set $title_focused_text #ffffff
 set $title_inactive_bg #1f1f1f
@@ -125,7 +107,7 @@ mode "resize" {
 bindsym $alt+r mode "resize"
 
 bar {
-  status_command i3blocks -c ~/.config/i3/i3blocks.conf
+  status_command i3blocks -c ~/.cache/wal/i3blocks.conf
   position top
   tray_output primary
   font pango:JetBrainsMono Nerd Font 12 
@@ -144,7 +126,7 @@ bar {
 # Autostart tools
 exec --no-startup-id ~/.local/bin/dotfiles/theme/random-wallpaper
 exec --no-startup-id picom --config ~/.config/picom/picom.conf
-exec --no-startup-id dunst
+exec --no-startup-id dunst -config ~/.cache/wal/dunstrc
 exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.local/bin/dotfiles/system/lock
 exec --no-startup-id ~/.local/bin/dotfiles/i3/assign-workspaces
 exec --no-startup-id ~/.local/bin/dotfiles/i3/monitor-watch
