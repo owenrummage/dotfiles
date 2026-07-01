@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 read -r _ user nice system idle iowait irq softirq steal _ < /proc/stat
 total=$((user + nice + system + idle + iowait + irq + softirq + steal))
 busy=$((total - idle - iowait))
@@ -23,15 +24,15 @@ if [[ -n "$cache" && -w "$cache_dir" ]]; then
 fi
 
 if [[ -z "$usage" ]]; then
-  printf '󰻠 --%%\n\n#9ece6a\n'
+  printf 'C --%%\n\n#22c55e\n'
   exit 0
 fi
 
-color="#9ece6a"
+color="#22c55e"
 if (( usage >= 85 )); then
-  color="#f7768e"
+  color="#ef4444"
 elif (( usage >= 60 )); then
-  color="#e0af68"
+  color="#eab308"
 fi
 
-printf '󰻠 %d%%\n\n%s\n' "$usage" "$color"
+printf 'C %d%%\n\n%s\n' "$usage" "$color"

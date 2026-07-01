@@ -1,38 +1,52 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+read_supply_value() {
+  local file=$1
+  [[ -r "$file" ]] || return 1
+  tr -d '\n' < "$file"
+}
+
 battery=""
 for path in /sys/class/power_supply/BAT*; do
   [[ -d "$path" ]] && battery="$path" && break
 done
 
 if [[ -z "$battery" ]]; then
-  printf '󰚥 AC\n\n#e6e6e6\n'
+  printf '󱐋 --%%\n\n#22c55e\n'
   exit 0
 fi
 
-capacity="$(<"${battery}/capacity")"
-status="$(<"${battery}/status")"
+capacity="$(read_supply_value "${battery}/capacity" || printf '0')"
+status="$(read_supply_value "${battery}/status" || printf 'Unknown')"
+[[ "$capacity" =~ ^[0-9]+$ ]] || capacity=0
+
 watts=""
 if [[ -r "${battery}/power_now" ]]; then
-  power_now="$(<"${battery}/power_now")"
-  watts="$(awk -v p="$power_now" 'BEGIN {printf " %.1fW", p/1000000}')"
+  power_now="$(read_supply_value "${battery}/power_now" || printf '0')"
+  if [[ "$power_now" =~ ^[0-9]+$ ]] && (( power_now > 0 )); then
+    watts="$(awk -v p="$power_now" 'BEGIN {printf " %.1fW", p/1000000}')"
+  fi
 elif [[ -r "${battery}/current_now" && -r "${battery}/voltage_now" ]]; then
-  current_now="$(<"${battery}/current_now")"
-  voltage_now="$(<"${battery}/voltage_now")"
-  watts="$(awk -v c="$current_now" -v v="$voltage_now" 'BEGIN {printf " %.1fW", (c*v)/1000000000000}')"
+  current_now="$(read_supply_value "${battery}/current_now" || printf '0')"
+  voltage_now="$(read_supply_value "${battery}/voltage_now" || printf '0')"
+  if [[ "$current_now" =~ ^[0-9]+$ && "$voltage_now" =~ ^[0-9]+$ ]] && (( current_now > 0 && voltage_now > 0 )); then
+    watts="$(awk -v c="$current_now" -v v="$voltage_now" 'BEGIN {printf " %.1fW", (c*v)/1000000000000}')"
+  fi
 fi
 
 icon="󰁹"
-[[ "$status" == "Charging" ]] && icon="󰂄"
+case "$status" in
+  Charging|Full|Not\ charging) icon="󱐋" ;;
+esac
 
-color="#9ece6a"
+color="#22c55e"
 if [[ "$status" == "Charging" ]]; then
-  color="#7aa2f7"
+  color="#22c55e"
 elif (( capacity < 20 )); then
-  color="#f7768e"
+  color="#ef4444"
 elif (( capacity < 50 )); then
-  color="#e0af68"
+  color="#eab308"
 fi
 
-printf '%s %s %s%%%s\n\n%s\n' "$icon" "$status" "$capacity" "$watts" "$color"
+printf '%s %s%%%s\n\n%s\n' "$icon" "$capacity" "$watts" "$color"

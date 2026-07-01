@@ -1,12 +1,51 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-usage="$(df / | awk 'NR==2 {gsub(/%/, "", $5); print $5}')"
-color="#9ece6a"
-if (( usage >= 85 )); then
-  color="#f7768e"
-elif (( usage >= 60 )); then
-  color="#e0af68"
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/i3blocks-disk"
+cache_dir="$(dirname "$cache")"
+mkdir -p "$cache_dir" 2>/dev/null || cache=""
+
+if command -v findmnt >/dev/null 2>&1; then
+  mapfile -t mounts < <(
+    findmnt -rno TARGET,SOURCE \
+      | awk '$1 != "/boot" && $2 ~ /^\/dev\// && $2 !~ /\[/ {print $1}' \
+      | sort -u
+  )
+else
+  mapfile -t mounts < <(
+    df -P -x tmpfs -x devtmpfs -x squashfs -x overlay -x efivarfs \
+      | awk 'NR > 1 && $6 != "/boot" {print $6}' \
+      | sort -u
+  )
 fi
 
-printf '󰋊 %s%%\n\n%s\n' "$usage" "$color"
+((${#mounts[@]})) || mounts=("/")
+
+index=0
+if [[ -n "$cache" && -r "$cache" ]]; then
+  read -r index < "$cache" || index=0
+fi
+[[ "$index" =~ ^[0-9]+$ ]] || index=0
+
+if [[ "${BLOCK_BUTTON:-}" == 1 ]]; then
+  index=$(((index + 1) % ${#mounts[@]}))
+fi
+
+if (( index >= ${#mounts[@]} )); then
+  index=0
+fi
+
+if [[ -n "$cache" ]]; then
+  printf '%s\n' "$index" > "$cache"
+fi
+
+mountpoint="${mounts[$index]}"
+usage="$(df -P "$mountpoint" | awk 'NR==2 {gsub(/%/, "", $5); print $5}')"
+color="#22c55e"
+if (( usage >= 85 )); then
+  color="#ef4444"
+elif (( usage >= 60 )); then
+  color="#eab308"
+fi
+
+printf '%s %s%%\n\n%s\n' "$mountpoint" "$usage" "$color"

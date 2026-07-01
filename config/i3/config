@@ -3,25 +3,31 @@ set $mod Mod1
 set $alt Mod1
 font pango:JetBrainsMono Nerd Font 10
 
-set $background #101214
-set $foreground #f4f7fb
-set $cursor #888888
-set $color0 #101214
-set $color1 #888888
-set $color2 #8E8E8E
-set $color3 #A7A7A7
-set $color4 #CFCFCF
-set $color5 #010101
-set $color6 #2E2E2E
-set $color7 #f4f7fb
-set $color8 #6f7880
-set $color9 #888888
-set $color10 #8E8E8E
-set $color11 #A7A7A7
-set $color12 #CFCFCF
-set $color13 #010101
-set $color14 #2E2E2E
-set $color15 #ffffff
+set $background #0e0607
+set $foreground #c2c0c1
+set $cursor #c2c0c1
+set $color0 #0e0607
+set $color1 #BC2135
+set $color2 #CC172E
+set $color3 #D7233A
+set $color4 #E3223A
+set $color5 #DC2B41
+set $color6 #F0344B
+set $color7 #c2c0c1
+set $color8 #695555
+set $color9 #BC2135
+set $color10 #CC172E
+set $color11 #D7233A
+set $color12 #E3223A
+set $color13 #DC2B41
+set $color14 #F0344B
+set $color15 #c2c0c1
+set $title_focused_bg #3a3a3a
+set $title_focused_text #ffffff
+set $title_inactive_bg #1f1f1f
+set $title_inactive_text #9a9a9a
+set $title_urgent_bg #b00020
+set $title_urgent_text #ffffff
 
 set $terminal kitty
 set $launcher rofi -show drun
@@ -36,10 +42,10 @@ hide_edge_borders smart
 focus_follows_mouse yes
 mouse_warping none
 
-client.focused          $color4 $color4 $foreground $color4 $color4
-client.focused_inactive $background $background $foreground $background $background
-client.unfocused        $background $background $color8 $background $background
-client.urgent           $color1 $color1 $foreground $color1 $color1
+client.focused          $title_focused_bg $title_focused_bg $title_focused_text $title_focused_bg $title_focused_bg
+client.focused_inactive $title_inactive_bg $title_inactive_bg $title_inactive_text $title_inactive_bg $title_inactive_bg
+client.unfocused        $title_inactive_bg $title_inactive_bg $title_inactive_text $title_inactive_bg $title_inactive_bg
+client.urgent           $title_urgent_bg $title_urgent_bg $title_urgent_text $title_urgent_bg $title_urgent_bg
 
 floating_modifier $mod
 focus_wrapping yes

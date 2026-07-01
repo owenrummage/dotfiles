@@ -12,15 +12,15 @@ configuration {
 @theme "~/.cache/wal/colors-rofi-dark.rasi"
 
 * {
-  foreground: #f4f7fb;
+  foreground: @foreground;
   normal-foreground: @foreground;
   alternate-normal-foreground: @foreground;
   accent: @active-background;
-  background: #101214;
-  background-light: #20252b;
+  background: @background;
+  background-light: @alternate-normal-background;
   border-color: @accent;
   selected-normal-background: @accent;
-  selected-normal-foreground: #101214;
+  selected-normal-foreground: @active-foreground;
   background-color: transparent;
 }
 

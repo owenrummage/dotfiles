@@ -20,19 +20,19 @@
   max_icon_size = 48
 
 [urgency_low]
-  background = "#101214"
-  foreground = "#f4f7fb"
-  frame_color = "#CFCFCF"
+  background = "#0e0607"
+  foreground = "#c2c0c1"
+  frame_color = "#695555"
   timeout = 4
 
 [urgency_normal]
-  background = "#101214"
-  foreground = "#f4f7fb"
-  frame_color = "#888888"
+  background = "#0e0607"
+  foreground = "#c2c0c1"
+  frame_color = "#E3223A"
   timeout = 6
 
 [urgency_critical]
-  background = "#101214"
-  foreground = "#f4f7fb"
-  frame_color = "#A7A7A7"
+  background = "#0e0607"
+  foreground = "#c2c0c1"
+  frame_color = "#BC2135"
   timeout = 0

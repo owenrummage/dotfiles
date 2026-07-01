@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+wal_color() {
+  local name=$1 fallback=$2 cache="${HOME}/.cache/wal/colors.sh"
+  local value
+
+  if [[ -r "$cache" ]]; then
+    case $- in
+      *u*)
+        set +u
+        source "$cache"
+        set -u
+        ;;
+      *)
+        source "$cache"
+        ;;
+    esac
+    value="${!name:-}"
+  fi
+
+  printf '%s\n' "${value:-$fallback}"
+}

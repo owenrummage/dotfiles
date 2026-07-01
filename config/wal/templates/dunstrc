@@ -20,19 +20,19 @@
   max_icon_size = 48
 
 [urgency_low]
-  background = "#101214"
-  foreground = "#f4f7fb"
-  frame_color = "{color12}"
+  background = "{background}"
+  foreground = "{foreground}"
+  frame_color = "{color8}"
   timeout = 4
 
 [urgency_normal]
-  background = "#101214"
-  foreground = "#f4f7fb"
-  frame_color = "{color9}"
+  background = "{background}"
+  foreground = "{foreground}"
+  frame_color = "{color4}"
   timeout = 6
 
 [urgency_critical]
-  background = "#101214"
-  foreground = "#f4f7fb"
-  frame_color = "{color11}"
+  background = "{background}"
+  foreground = "{foreground}"
+  frame_color = "{color1}"
   timeout = 0
