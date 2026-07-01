@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/i3blocks.conf"
+colors="${HOME}/.cache/wal/colors.sh"
+
+foreground="#d4d4d4"
+
+if [[ -r "$colors" ]]; then
+  set +u
+  source "$colors"
+  set -u
+fi
+
+mkdir -p "$(dirname -- "$cache")"
+cat > "$cache" <<I3BLOCKS
+separator=true
+separator_block_width=48
+markup=pango
+command=~/.local/bin/dotfiles/i3blocks/\$BLOCK_NAME
+
+[net]
+color=#3b82f6
+interval=10
+
+[disk]
+color=${color2:-#22c55e}
+interval=60
+
+[memory]
+color=${color2:-#22c55e}
+interval=5
+
+[cpu]
+color=${color2:-#22c55e}
+interval=2
+
+[battery]
+color=${color2:-#22c55e}
+interval=2
+
+[volume]
+color=#a855f7
+interval=2
+
+[datetime]
+color=#d4d4d4
+interval=30
+I3BLOCKS
+
+exec i3blocks -c "$cache"

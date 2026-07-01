@@ -3,6 +3,25 @@ set $mod Mod1
 set $alt Mod1
 font pango:JetBrainsMono Nerd Font 10
 
+set $background #101214
+set $foreground #f4f7fb
+set $cursor #f4f7fb
+set $color0 #101214
+set $color1 #8a8f98
+set $color2 #9aa0a6
+set $color3 #b0b6bf
+set $color4 #c2c7d0
+set $color5 #a7adb7
+set $color6 #949aa3
+set $color7 #f4f7fb
+set $color8 #6f7880
+set $color9 #8a8f98
+set $color10 #9aa0a6
+set $color11 #b0b6bf
+set $color12 #c2c7d0
+set $color13 #a7adb7
+set $color14 #949aa3
+set $color15 #ffffff
 include ~/.cache/wal/i3-colors
 set $title_focused_bg #3a3a3a
 set $title_focused_text #ffffff
@@ -107,7 +126,7 @@ mode "resize" {
 bindsym $alt+r mode "resize"
 
 bar {
-  status_command i3blocks -c ~/.cache/wal/i3blocks.conf
+  status_command ~/.local/bin/dotfiles/i3blocks/run
   position top
   tray_output primary
   font pango:JetBrainsMono Nerd Font 12 
@@ -117,8 +136,8 @@ bar {
     statusline $foreground
     separator  $color8
     focused_workspace  $color4 $color4 $background
-    active_workspace   $color2 $color2 $background
-    inactive_workspace $color0 $color0 $foreground
+    active_workspace   $background $background $color4
+    inactive_workspace $background $background $color8
     urgent_workspace   $color1 $color1 $background
   }
 }
