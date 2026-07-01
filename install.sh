@@ -90,6 +90,33 @@ install_hardware_detection_tools() {
   yay -S --needed --noconfirm usbutils pciutils
 }
 
+remove_conflicting_packages() {
+  local conflicts=(
+    "vesktop-bin:vesktop vesktop-git vesktop-canary-bin"
+    "picom-ftlabs-git:picom picom-git picom-ibhagwan-git picom-jonaburg-git"
+    "i3lock-color:i3lock i3lock-color-git i3lock-fancy-git"
+    "pipewire-pulse:pulseaudio pulseaudio-alsa pulseaudio-bluetooth"
+    "1password:1password-beta"
+    "1password-cli:1password-cli-beta"
+    "ly:ly-git"
+  )
+  local entry conflict
+  local -a installed_conflicts=()
+
+  for entry in "${conflicts[@]}"; do
+    for conflict in ${entry#*:}; do
+      if pacman -Qq "$conflict" >/dev/null 2>&1; then
+        installed_conflicts+=("$conflict")
+      fi
+    done
+  done
+
+  ((${#installed_conflicts[@]})) || return 0
+
+  log "Removing packages that conflict with this setup: ${installed_conflicts[*]}"
+  sudo pacman -Rns --noconfirm "${installed_conflicts[@]}"
+}
+
 install_packages() {
   local has_bluetooth=$1
   local packages=(
@@ -126,6 +153,8 @@ install_packages() {
   else
     warn "Skipping Bluetooth packages."
   fi
+
+  remove_conflicting_packages
 
   log "Installing desktop packages with yay."
   yay -S --needed --noconfirm "${packages[@]}"
