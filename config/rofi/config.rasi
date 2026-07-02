@@ -12,11 +12,9 @@ configuration {
 @theme "~/.cache/wal/colors-rofi-dark.rasi"
 
 * {
-  foreground: @foreground;
-  normal-foreground: @foreground;
-  alternate-normal-foreground: @foreground;
+  normal-foreground: #ffffff;
+  alternate-normal-foreground: #ffffff;
   accent: @active-background;
-  background: @background;
   background-light: @alternate-normal-background;
   border-color: @accent;
   selected-normal-background: @accent;
@@ -66,19 +64,35 @@ listview {
 element {
   padding: 9px 10px;
   border-radius: 7px;
-  text-color: @foreground;
+  text-color: #ffffff;
 }
 
 element normal.normal {
-  text-color: @foreground;
+  text-color: #ffffff;
 }
 
 element alternate.normal {
-  text-color: @foreground;
+  text-color: #ffffff;
+}
+
+element-text {
+  text-color: #ffffff;
+}
+
+element-text normal.normal {
+  text-color: #ffffff;
+}
+
+element-text alternate.normal {
+  text-color: #ffffff;
 }
 
 element selected {
   background-color: @accent;
+  text-color: @background;
+}
+
+element-text selected {
   text-color: @background;
 }
 

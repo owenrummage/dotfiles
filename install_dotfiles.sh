@@ -13,6 +13,7 @@ warn() { printf '%sWARN%s %s\n' "$yellow" "$reset" "$*"; }
 die() { printf '%sERROR%s %s\n' "$red" "$reset" "$*" >&2; exit 1; }
 
 declare -a LINKS=(
+  ".gitconfig:${HOME}/.gitconfig"
   "config/i3:${HOME}/.config/i3"
   "config/picom:${HOME}/.config/picom"
   "config/kitty:${HOME}/.config/kitty"

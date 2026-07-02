@@ -9,6 +9,7 @@ ok() { printf '%sOK%s %s\n' "$green" "$reset" "$*"; }
 warn() { printf '%sWARN%s %s\n' "$yellow" "$reset" "$*"; }
 
 declare -a TARGETS=(
+  "${HOME}/.gitconfig"
   "${HOME}/.config/i3"
   "${HOME}/.config/picom"
   "${HOME}/.config/kitty"
