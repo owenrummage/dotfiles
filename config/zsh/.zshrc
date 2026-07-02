@@ -5,6 +5,7 @@ export EDITOR="${EDITOR:-nvim}"
 export VISUAL="${VISUAL:-$EDITOR}"
 export PAGER="${PAGER:-less}"
 export PATH="${HOME}/.local/bin:${HOME}/.local/bin/dotfiles:${PATH}"
+export LIBVIRT_DEFAULT_URI="qemu:///system"
 
 HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 HISTSIZE=100000

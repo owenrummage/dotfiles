@@ -32,6 +32,7 @@ set $title_urgent_text #ffffff
 
 set $terminal kitty
 set $launcher rofi -show combi
+set $file_search rofi -show recursivebrowser
 set $lock ~/.local/bin/dotfiles/system/lock
 
 gaps inner 40
@@ -70,7 +71,7 @@ bindsym $alt+Shift+Left move left
 bindsym $alt+Shift+Down move down
 bindsym $alt+Shift+Up move up
 bindsym $alt+Shift+Right move right
-bindsym $mod+f fullscreen toggle
+bindsym $mod+f exec --no-startup-id $file_search
 bindsym $mod+Shift+space floating toggle
 
 # Workspace shortcuts

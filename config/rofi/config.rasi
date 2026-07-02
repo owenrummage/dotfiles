@@ -1,6 +1,6 @@
 configuration {
   modes: "combi,drun,run,window,filebrowser,recursivebrowser,calc:~/.config/rofi/scripts/calc";
-  combi-modes: "calc,drun,recursivebrowser,run,window";
+  combi-modes: "calc,drun,run,window";
   show-icons: true;
   icon-theme: "Papirus-Dark";
   font: "JetBrainsMono Nerd Font 11";
@@ -23,8 +23,8 @@ configuration {
     command: "xdg-open";
   }
   recursivebrowser {
-    directory: "~/";
-    filter-regex: "(.*/\\.cache/.*|.*/\\.git/.*|.*/node_modules/.*|.*/target/.*|.*/__pycache__/.*)";
+    directory: "/";
+    filter-regex: "(/proc/.*|/sys/.*|/dev/.*|/run/.*|/tmp/.*|.*/\\.git/.*|.*/node_modules/.*|.*/target/.*|.*/__pycache__/.*)";
     command: "xdg-open";
   }
 }
