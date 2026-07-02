@@ -1,12 +1,32 @@
 configuration {
-  modi: "drun,run,window";
+  modes: "combi,drun,run,window,filebrowser,recursivebrowser,calc:~/.config/rofi/scripts/calc";
+  combi-modes: "calc,drun,recursivebrowser,run,window";
   show-icons: true;
   icon-theme: "Papirus-Dark";
   font: "JetBrainsMono Nerd Font 11";
+  display-combi: "Search";
   display-drun: "Apps";
   display-run: "Run";
   display-window: "Windows";
+  display-filebrowser: "Browse";
+  display-recursivebrowser: "Files";
+  display-calc: "Calc";
+  combi-display-format: "{mode} {text}";
   drun-display-format: "{name}";
+  matching: "fuzzy";
+  sort: true;
+  filebrowser {
+    directory: "~/";
+    sorting-method: "name";
+    directories-first: true;
+    show-hidden: false;
+    command: "xdg-open";
+  }
+  recursivebrowser {
+    directory: "~/";
+    filter-regex: "(.*/\\.cache/.*|.*/\\.git/.*|.*/node_modules/.*|.*/target/.*|.*/__pycache__/.*)";
+    command: "xdg-open";
+  }
 }
 
 @theme "~/.cache/wal/colors-rofi-dark.rasi"

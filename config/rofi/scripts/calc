@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+copy_result() {
+  local value=$1
+
+  if command -v xclip >/dev/null 2>&1; then
+    printf '%s' "$value" | xclip -selection clipboard >/dev/null 2>&1 || true
+  elif command -v wl-copy >/dev/null 2>&1; then
+    printf '%s' "$value" | wl-copy >/dev/null 2>&1 || true
+  fi
+}
+
+evaluate() {
+  python3 - "$1" <<'PY'
+import ast
+import math
+import operator
+import sys
+
+expr = sys.argv[1].strip()
+if expr.startswith("="):
+    expr = expr[1:].strip()
+
+allowed_names = {
+    "e": math.e,
+    "pi": math.pi,
+    "tau": math.tau,
+    "abs": abs,
+    "round": round,
+    "ceil": math.ceil,
+    "floor": math.floor,
+    "sqrt": math.sqrt,
+    "sin": math.sin,
+    "cos": math.cos,
+    "tan": math.tan,
+    "log": math.log,
+    "log10": math.log10,
+    "pow": pow,
+}
+
+binary_ops = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+unary_ops = {
+    ast.UAdd: operator.pos,
+    ast.USub: operator.neg,
+}
+
+def eval_node(node):
+    if isinstance(node, ast.Expression):
+        return eval_node(node.body)
+    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+        return node.value
+    if isinstance(node, ast.BinOp) and type(node.op) in binary_ops:
+        return binary_ops[type(node.op)](eval_node(node.left), eval_node(node.right))
+    if isinstance(node, ast.UnaryOp) and type(node.op) in unary_ops:
+        return unary_ops[type(node.op)](eval_node(node.operand))
+    if isinstance(node, ast.Name) and node.id in allowed_names:
+        value = allowed_names[node.id]
+        if not callable(value):
+            return value
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+        func = allowed_names.get(node.func.id)
+        if callable(func):
+            return func(*(eval_node(arg) for arg in node.args))
+    raise ValueError("unsupported expression")
+
+tree = ast.parse(expr, mode="eval")
+result = eval_node(tree)
+if isinstance(result, float) and result.is_integer():
+    result = int(result)
+print(result)
+PY
+}
+
+printf '\0prompt\x1fCalc\n'
+printf '\0message\x1fType math and press Enter. Results are copied to the clipboard.\n'
+
+case "${ROFI_RETV:-0}" in
+  0)
+    printf '2 + 2\0icon\x1faccessories-calculator\x1fdisplay\x1fCalculator\n'
+    ;;
+  1)
+    result="$(evaluate "${ROFI_INFO:-$1}" 2>/dev/null || true)"
+    if [[ -n "$result" ]]; then
+      copy_result "$result"
+    fi
+    ;;
+  2)
+    result="$(evaluate "${1:-}" 2>/dev/null || true)"
+    if [[ -n "$result" ]]; then
+      copy_result "$result"
+      printf '%s\0icon\x1faccessories-calculator\x1fdisplay\x1f= %s\n' "$result" "$result"
+    fi
+    ;;
+esac

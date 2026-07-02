@@ -31,7 +31,7 @@ set $title_urgent_bg #b00020
 set $title_urgent_text #ffffff
 
 set $terminal kitty
-set $launcher rofi -show drun
+set $launcher rofi -show combi
 set $lock ~/.local/bin/dotfiles/system/lock
 
 gaps inner 40
